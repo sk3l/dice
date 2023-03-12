@@ -81,7 +81,7 @@ RUN if [ -n "$dev_git_mail" ]; then \
 # TODO - make plug-able by `RUN source <some_shell_script>`
 ENV shell_rc_url=https://raw.githubusercontent.com/sk3l/sk3lshell/master/dot-files
 RUN wget -O $HOME/.bashrc               $shell_rc_url/.bashrc
-RUN wget -O $HOME/.bashrc_local_ubuntu  $shell_rc_url/.bashrc_local_fedora
+RUN wget -O $HOME/.bashrc_local_fedora  $shell_rc_url/.bashrc_local_fedora
 
 RUN echo "export EDITOR=/usr/local/sbin/nvim" >> $HOME/.bashrc
 
