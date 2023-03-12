@@ -1,9 +1,28 @@
-# dice
-**Development Integrated Container Environment**
+<h1 align="center">
+<img src="https://user-images.githubusercontent.com/4662876/224566650-a840d55d-e015-44e1-b755-d5b3acc6bb2f.png" alt="dice">
+     <div><strong>dice</strong></div>
+</h1>
 
-## What is it?
-This is a set of scripts and files for Docker-izing an IDE-like experience using:
+`dice` is an acronym for the term "Development Integrated Container Environment". It's a set of scripts and files that, when combined, provider a Dockerized IDE-like experience, which contains all the tools and utilities a developer needs in their coding toolkit.
+
+**Features**
+- portable
+  - runs anywhere you can put Docker and GNU Make
+- convenient
+  - run it without Docker knowledge using GNU MAKE commands
+- smart
+  - eliminates tracking differing package names for the package manager serving your host system
+- configurable
+  - customize user name, editor, shell, etc
+
+## What it contains:
+The building blocks `dice` is assembled from include:
 - tmux
+- compilers and run-time environments:
+  - C/C++
+  - Golang
+  - Python
+  - Node.JS
 - NeoVim
 - ALE LSP
 - language-specific LSP plugins, e.g. clangd
