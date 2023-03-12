@@ -1,0 +1,24 @@
+#!/bin/bash
+
+IMAGE=fedora
+TAG=38
+CONTAINER=dice
+
+CODE_DIR=
+CODE_MNT="-v ${CODE_DIR}:code"
+
+docker pull ${IMAGE}:${TAG}
+
+
+docker ps -a | grep -q $CONTAINER
+if [[ $? -ne 0 ]]; then
+    echo "Dev container ${CONTAINER} not found; creating"
+    docker create -i --tty --name ${CONTAINER} ${CODE_MNT} ${IMAGE}:${TAG}
+fi
+
+docker ps | grep -q $CONTAINER
+if [[ $? -ne 0 ]]; then
+   echo "Starting dev container ${CONTAINER}"
+   docker start ${CONTAINER}
+fi
+docker attach ${CONTAINER}

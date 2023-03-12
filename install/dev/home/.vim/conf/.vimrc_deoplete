@@ -1,0 +1,31 @@
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" Deoplete 
+let g:ale_completion_enabled = 1
+let g:deoplete#enable_at_startup = 1
+
+let g:ale_linters = {'cpp' : ['clang']}
+
+let g:neoinclude#paths = {'cpp': '/opt/rh/devtoolset-7/root/usr/include/c++/7'}
+
+"let g:deoplete#sources#clang#debug = 0
+"let g:deoplete#sources#clang#libclang_path = '/opt/rh/llvm-toolset-7/root/usr/lib64/libclang.so'
+let g:deoplete#sources#clang#std#cpp = 'c++14'
+"let g:deoplete#sources#clang#clang_header = '/opt/rh/llvm-toolset-7/root/usr/lib64/clang/5.0.1/include'
+"let g:deoplete#sources#clang#flags = [""]
+
+" Use ALE with deoplete 
+" call deoplete#custom#option('sources', {
+" \ '_': ['ale'],
+" \})
+
+"let g:deoplete#sources#jedi#enable_cache = 0
+
+set omnifunc=ale#completion#OmniFunc
+
+"let g:python3_host_prog = '/opt/bb/bin/python3.7'
+
+" " Jedi
+" Disable autocompletion (using deoplete instead)
+let g:jedi#completions_enabled = 0
+"let g:deoplete#sources#jedi#python_path = '/opt/bb/bin/python3.7'
+
