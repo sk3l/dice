@@ -4,8 +4,9 @@
 # Our docker Hub account name
 # HUB_NAMESPACE = "<hub_name>"
 
-CUR_DIR = $(shell echo "${PWD}")
-MKFILE_DIR:=$(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+CUR_DIR:= $(shell echo "${PWD}")
+MKFILE_DIR:= $(shell dirname $(realpath $(firstword $(MAKEFILE_LIST))))
+INSTALL_DIR?= /home/${USER}/.local/bin
 
 ##
 # Image parameters
@@ -13,6 +14,7 @@ SOURCE:= "dice.dockerfile"
 AUTHOR:= sk3l
 REPO:=   dice
 IMAGE:=  $(AUTHOR)/$(REPO)
+NAME:=   $(REPO)
 TAG?=    latest
 
 # Assign development user name passed to container
@@ -51,6 +53,14 @@ build: ## Build the container image for dice
 		.
 
 ##
+# Target handling execution of 'docker build'
+.PHONY: install
+install: ## Install dice
+	@echo "Installing dice at $(INSTALL_DIR)"
+	@mkdir -p $(INSTALL_DIR) && \
+	cp $(MKFILE_DIR)/dice $(INSTALL_DIR)
+
+##
 # Target for validating image definition
 .PHONY: check
 check: ## Verify integrity of dice image
@@ -70,11 +80,12 @@ ls: ## List dice image inventory
 # Target handling execution of 'docker run'
 .PHONY: run
 run: check ## Run container instance of dice
-	@docker run     \
-		--rm        \
-		-i          \
-		--tty       \
-		$(MNT_OPTS) \
+	@docker run     	\
+		--rm        	\
+		-i          	\
+		--tty       	\
+		--name $(NAME)	\
+		$(MNT_OPTS) 	\
 		$(IMAGE):$(TAG)
 
 ##
