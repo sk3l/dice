@@ -1,0 +1,57 @@
+#!/bin/bash
+
+function usage {
+	echo -e "\ndice"
+    echo -e "\tDevelopment Integrated Container Environment"
+	echo -e "\nUsage:\n"
+	echo -e "    dice [-h] [-d dir] [-i image] [-n name] [-u user]"
+	echo -e "\nWhere:"
+    echo -e "   -h       = show this usage"
+    echo -e "   -d dir   = directory at which to mount container (default=\$HOME)"
+    echo -e "   -i image = container image to use (default=sk3l/dice:latest)"
+    echo -e "   -n name  = container instance name (default=dice)"
+    echo -e "   -u user  = container user name (default=\$USER)"
+    echo -e ""
+}
+
+# Variables
+DEV_DIRECTORY=${HOME}
+DEV_USER=${USER}
+CONTAINER_IMAGE="sk3l/dice:latest"
+CONTAINER_NAME="dice-$(date +%Y%m%d-%H%M%S)"
+
+
+# Parse CLI arguments
+while getopts "d:i:hn:u:" option; do
+    case "${option}" in
+    d)
+        DEV_DIRECTORY=${OPTARG}
+        ;;
+    i)
+        CONTAINER_IMAGE=${OPTARG}
+        ;;
+    n)
+        CONTAINER_NAME=${OPTARG}
+        ;;
+    u)
+        DEV_USER=${OPTARG}
+        ;;
+    h)
+        usage
+        exit 1
+        ;;
+    esac
+done
+shift "$((OPTIND-1))"
+
+MOUNT_OPTS=${DEV_DIRECTORY}:/home/${DEV_USER}/code:shared
+
+## Run container instance of dice
+docker run                  \
+    --rm                    \
+    -i                      \
+    --tty                   \
+    --name ${CONTAINER_NAME}\
+    -v ${MOUNT_OPTS}        \
+    ${CONTAINER_IMAGE}
+
