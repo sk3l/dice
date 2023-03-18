@@ -1,4 +1,4 @@
-FROM fedora:38 
+FROM fedora:38
 
 MAINTAINER Admin <admin@skelton.onl>
 
@@ -74,7 +74,7 @@ RUN mkdir $dev_project_dir
 # Setup dev user Git config
 RUN git config --global --add user.name $dev_git_user
 RUN if [ -n "$dev_git_mail" ]; then \
-        git config --global --add user.email $dev_git_mail; \ 
+        git config --global --add user.email $dev_git_mail; \
     fi
 ##
 # Install developer's shell resource files
@@ -87,9 +87,10 @@ RUN echo "export EDITOR=/usr/local/sbin/nvim" >> $HOME/.bashrc
 
 ##
 # Install developer's tmux config file
-# TODO - add shell script for setting up tmux windows/panes
-ENV tmux_conf_url=https://raw.githubusercontent.com/sk3l/tmux-conf/master/
-RUN wget -O $HOME/.tmux.conf            $tmux_conf_url/.tmux.conf
+# Customize the tmnux window/pane in 'install/entry-point.sh'
+ENV shell_conf_dir=/home/$dev_user
+
+COPY --chown=$dev_user:$dev_user install/conf/shell/.tmux.conf      $shell_conf_dir/.tmux.conf
 
 ##
 # Install Neovim configuration
@@ -127,7 +128,7 @@ RUN go install golang.org/x/tools/gopls@latest
 SHELL ["/bin/bash", "-c"]
 ENV node_packages="write-good"
 RUN wget -qO- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-RUN source $HOME/.nvm/nvm.sh && nvm install node && npm install $node_packages 
+RUN source $HOME/.nvm/nvm.sh && nvm install node && npm install $node_packages
 
 WORKDIR /home/$dev_user
 COPY install/entry-point.sh /entry-point.sh
