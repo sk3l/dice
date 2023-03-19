@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# Remount root filesystem as shared
+# Fixes Podman warning that '"/" is not a shared mount'
+# See https://github.com/containers/buildah/issues/3726
+sudo mount --make-rshared /
+
 # Below is needed to ensure 256 color support for Neovim in tmux
 # TODO - add this into .bashrc sourced by the container image
 export TERM="screen-256color"

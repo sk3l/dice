@@ -52,6 +52,7 @@ docker run                  \
     -i                      \
     --tty                   \
     --name ${CONTAINER_NAME}\
+    --privileged            \
     -v ${MOUNT_OPTS}        \
     ${CONTAINER_IMAGE}
 
