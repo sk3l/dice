@@ -17,6 +17,7 @@ ENV packages="bash                \
               ca-certificates     \
               curl                \
               git                 \
+              gnupg               \
               golang              \
               grep                \
               make                \
@@ -30,6 +31,7 @@ ENV packages="bash                \
               sudo                \
               tmux                \
               vifm                \
+              which               \
               wget"
 
 ##
@@ -67,8 +69,6 @@ RUN echo "$dev_user   ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-$dev_us
 USER $dev_user
 WORKDIR /home/$dev_user
 RUN mkdir $dev_project_dir
-
-
 
 ##
 # Setup dev user Git config
