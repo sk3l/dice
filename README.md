@@ -44,6 +44,5 @@ This will land you at a Bash shell in the $dev_user's $HOME directory by default
 ## TODO
 - templatize dev user $HOME contents, dot files, tmux conf, etc
 - more options around project editing, path, build/lint/debug integration, etc
-- more options around Docker image construction and configuration
-
-
+- SSH integration
+- ~more options around Docker image construction and configuration~
