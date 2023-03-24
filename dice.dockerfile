@@ -20,6 +20,7 @@ ENV packages="bash                \
               gnupg               \
               golang              \
               grep                \
+              hadolint            \
               make                \
               podman              \
               python3             \

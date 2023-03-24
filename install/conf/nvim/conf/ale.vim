@@ -42,6 +42,7 @@ set omnifunc=ale#completion#OmniFunc
 let g:ale_linters = {
 \   'c': ['clang', 'clangcheck', 'clangd'],
 \   'cpp': ['clang', 'clangcheck', 'clangd'],
+\   'dockerfile': ['hadolint'],
 \   'go': ['gopls'],
 \   'javascript': ['eslint'],
 \   'markdown': ['languagetool', 'proselint', 'writegood'],
