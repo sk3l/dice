@@ -53,6 +53,17 @@ build: ## Build the container image for dice
 		.
 
 ##
+# Target handling execution of 'docker build'; FORCE new, clean image build
+.PHONY: rebuild
+rebuild: ## Build the container image for dice
+	@docker build             \
+		--no-cache            \
+		--tag $(IMAGE):$(TAG) \
+		$(DEV_USER_OPTS)      \
+		-f $(SOURCE)          \
+		.
+
+##
 # Target handling execution of 'docker build'
 .PHONY: install
 install: ## Install dice
