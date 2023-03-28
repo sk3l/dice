@@ -1,3 +1,0 @@
-CompileFlags:                               # Tweak the parse settings
-  Add: [-xc++, -Wall, -I /opt/bb/include, -I /opt/rh/devtoolset-7/root/usr/include/c++/7 ]    # treat all files as C++, enable more warnings
-
