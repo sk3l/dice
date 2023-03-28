@@ -9,7 +9,6 @@ ARG dev_password=dev123
 ARG dev_groups=adm,wheel
 ARG dev_git_user=$dev_user
 ARG dev_git_mail=
-ARG dev_project_dir=code
 
 ##
 # Define our image's packages
@@ -69,7 +68,6 @@ RUN echo "$dev_user   ALL=(ALL:ALL) NOPASSWD: ALL" > /etc/sudoers.d/sudo-$dev_us
 # Pivot to setup of development user
 USER $dev_user
 WORKDIR /home/$dev_user
-RUN mkdir $dev_project_dir
 
 ##
 # Setup dev user Git config

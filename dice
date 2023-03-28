@@ -4,37 +4,36 @@ function usage {
 	echo -e "\ndice"
     echo -e "\tDevelopment Integrated Container Environment"
 	echo -e "\nUsage:\n"
-	echo -e "    dice [-h] [-d dir] [-i image] [-n name] [-u user]"
+	echo -e "    dice [-h] [-i image] [-m dir] [-n name] [-u user]"
 	echo -e "\nWhere:"
     echo -e "   -h       = show this usage"
-    echo -e "   -d dir   = directory at which to mount container (default=\$HOME)"
     echo -e "   -i image = container image to use (default=sk3l/dice:latest)"
+    echo -e "   -m dir   = mount container at specified project directory on host (default=\$HOME)"
     echo -e "   -n name  = container instance name (default=dice)"
     echo -e "   -u user  = container user name (default=\$USER)"
     echo -e ""
 }
 
 # Variables
-DEV_DIRECTORY=${HOME}
-DEV_USER=${USER}
-CONTAINER_IMAGE="sk3l/dice:latest"
-CONTAINER_NAME="dice-$(date +%Y%m%d-%H%M%S)"
-
+PROJECT_USER=${USER}
+PROJECT_DIR=${HOME}
+PROJECT_NAME="dice-$(date +%Y%m%d-%H%M%S)"
+SOURCE_IMAGE="sk3l/dice:latest"
 
 # Parse CLI arguments
-while getopts "d:i:hn:u:" option; do
+while getopts "i:hm:n:u:" option; do
     case "${option}" in
-    d)
-        DEV_DIRECTORY=${OPTARG}
-        ;;
     i)
-        CONTAINER_IMAGE=${OPTARG}
+        SOURCE_IMAGE=${OPTARG}
+        ;;
+    m)
+        PROJECT_DIR=${OPTARG}
         ;;
     n)
-        CONTAINER_NAME=${OPTARG}
+        PROJECT_NAME=${OPTARG}
         ;;
     u)
-        DEV_USER=${OPTARG}
+        PROJECT_USER=${OPTARG}
         ;;
     h)
         usage
@@ -44,15 +43,30 @@ while getopts "d:i:hn:u:" option; do
 done
 shift "$((OPTIND-1))"
 
-MOUNT_OPTS=${DEV_DIRECTORY}:/home/${DEV_USER}/code:shared
+# Mount the host system's project directory, if it exists
+PROJECT_MOUNT=
+if [[ -d ${PROJECT_DIR} ]]; then
+    if [[ -x ${PROJECT_DIR} ]]; then
+        PROJECT_MOUNT="-v ${PROJECT_DIR}:/home/${PROJECT_USER}/${PROJECT_NAME}:shared"
+    else
+        echo -e "WARN: cannot mount inaccessible project directory '${PROJECT_DIR}'; skipping"
+    fi
+fi
+
+# Mount the host system .ssh directory, if it exists
+SSH_MOUNT=
+if [[ -d ${HOME}/.ssh ]]; then
+    SSH_MOUNT="-v ${HOME}/.ssh:/home/${PROJECT_USER}/.ssh:shared"
+fi
 
 ## Run container instance of dice
 docker run                  \
     --rm                    \
     -i                      \
     --tty                   \
-    --name ${CONTAINER_NAME}\
+    --name ${PROJECT_NAME}  \
     --privileged            \
-    -v ${MOUNT_OPTS}        \
-    ${CONTAINER_IMAGE}
+    ${PROJECT_MOUNT}        \
+    ${SSH_MOUNT}            \
+    ${SOURCE_IMAGE}
 

@@ -18,16 +18,21 @@ NAME:=   $(REPO)
 TAG?=    latest
 
 # Assign development user name passed to container
-DEV_USER?= $(shell echo "${USER}")
-DEV_USER_OPTS:=--build-arg dev_user=$(DEV_USER)
+PROJECT_USER?=$(shell echo "${USER}")
 
-# Establish bind mount between host and container
-# (default=nothing shared)
-MNT_OPTS:=-v :/home/$(DEV_USER)/code
-CODE_DIR_VAR:=CODE_DIR
-ifdef $(CODE_DIR_VAR)
-    MNT_OPTS=-v $(CODE_DIR):/home/$(DEV_USER)/code:shared
-endif
+# Assign name for development session
+PROJECT_NAME?=$(shell echo "dice-$$(date +%Y%m%d-%H%M%S)")
+
+# Assign location of host's project directory for use in the container
+# (default=no shared project directory)
+PROJECT_PATH?=
+
+# Assign location of development user's SSH directory for use in the container
+# (default=.ssh directory under current user's $HOME)
+SSH_PATH?=$(shell echo "${HOME}/.ssh")
+
+# Assign arguments for image build
+IMAGE_ARGS?=--build-arg dev_user=$(PROJECT_USER)
 
 # HELP
 # This will output the help for each task
@@ -48,7 +53,7 @@ help: ## This help.
 build: ## Build the container image for dice
 	@docker build             \
 		--tag $(IMAGE):$(TAG) \
-		$(DEV_USER_OPTS)      \
+		$(IMAGE_ARGS)         \
 		-f $(SOURCE)          \
 		.
 
@@ -59,7 +64,7 @@ rebuild: ## Build the container image for dice
 	@docker build             \
 		--no-cache            \
 		--tag $(IMAGE):$(TAG) \
-		$(DEV_USER_OPTS)      \
+		$(IMAGE_ARGS)         \
 		-f $(SOURCE)          \
 		.
 
@@ -77,7 +82,7 @@ install: ## Install dice
 check: ## Verify integrity of dice image
 	@image_hash=$(shell docker images -q $(IMAGE):$(TAG)); \
 	if [ -z "$$image_hash" ]; then \
-	echo "ERROR: couldn't locate image $(IMAGE):$(TAG) (have you run 'make build'?)"; \
+		echo "ERROR: couldn't locate image $(IMAGE):$(TAG) (have you run 'make build'?)"; \
 		exit 1; \
 	fi
 
@@ -91,13 +96,23 @@ ls: ## List dice image inventory
 # Target handling execution of 'docker run'
 .PHONY: run
 run: check ## Run container instance of dice
-	@docker run     	\
-		--rm        	\
-		-i          	\
-		--tty       	\
-		--name $(NAME)	\
-		$(MNT_OPTS) 	\
-		$(IMAGE):$(TAG)
+	@project_mount=; \
+	if [ -d $(PROJECT_PATH) ] && [ -x $(PROJECT_PATH) ]; then \
+		project_mount="-v $(PROJECT_PATH):/home/$(PROJECT_USER)/$(PROJECT_NAME):shared"; \
+	fi; \
+	ssh_mount=; \
+	if [ -d $(SSH_PATH) ] && [ -x $(SSH_PATH) ]; then \
+		ssh_mount=-"v $(SSH_PATH):/home/${PROJECT_USER}/.ssh:shared"; \
+	fi; \
+	docker run                 \
+		--rm                   \
+		-i                     \
+		--tty                  \
+		--name $(PROJECT_NAME) \
+		--privileged           \
+		$$project_mount        \
+		$$ssh_mount            \
+		$(IMAGE):$(TAG);
 
 ##
 # Target handling execution of 'docker rmi'
