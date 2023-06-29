@@ -1,5 +1,5 @@
 ##
-# Dockerfile for dice application
+# Makefile for dice application
 
 # Our docker Hub account name
 # HUB_NAMESPACE = "<hub_name>"

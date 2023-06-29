@@ -21,6 +21,8 @@ ENV packages="bash                \
               grep                \
               hadolint            \
               make                \
+              nmap-ncat           \
+              net-tools           \
               podman              \
               python3             \
               python3-pip         \

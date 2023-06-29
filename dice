@@ -1,15 +1,16 @@
 #!/bin/bash
 
 function usage {
-	echo -e "\ndice"
+    echo -e "\ndice"
     echo -e "\tDevelopment Integrated Container Environment"
-	echo -e "\nUsage:\n"
-	echo -e "    dice [-h] [-i image] [-m dir] [-n name] [-u user]"
-	echo -e "\nWhere:"
+    echo -e "\nUsage:\n"
+    echo -e "    dice [-h] [-i image] [-m dir] [-n name] [-u user]"
+    echo -e "\nWhere:"
     echo -e "   -h       = show this usage"
     echo -e "   -i image = container image to use (default=sk3l/dice:latest)"
     echo -e "   -m dir   = mount container at specified project directory on host (default=\$HOME)"
     echo -e "   -n name  = container instance name (default=dice)"
+    echo -e "   -p ports = list of port mappings between host and container [addr (default=)"
     echo -e "   -u user  = container user name (default=\$USER)"
     echo -e ""
 }
@@ -18,6 +19,7 @@ function usage {
 PROJECT_USER=${USER}
 PROJECT_DIR=${HOME}
 PROJECT_NAME="dice-$(date +%Y%m%d-%H%M%S)"
+PROJECT_PORTS=${PUBLISH_PORTS}
 SOURCE_IMAGE="sk3l/dice:latest"
 
 # Parse CLI arguments
@@ -32,10 +34,17 @@ while getopts "i:hm:n:u:" option; do
     n)
         PROJECT_NAME=${OPTARG}
         ;;
+    p)
+        PROJECT_PORTS=${OPTARG}
+        ;;
     u)
         PROJECT_USER=${OPTARG}
         ;;
     h)
+        usage
+        exit 1
+        ;;
+    *)
         usage
         exit 1
         ;;
@@ -60,13 +69,14 @@ if [[ -d ${HOME}/.ssh ]]; then
 fi
 
 ## Run container instance of dice
-docker run                  \
-    --rm                    \
-    -i                      \
-    --tty                   \
-    --name ${PROJECT_NAME}  \
-    --privileged            \
-    ${PROJECT_MOUNT}        \
-    ${SSH_MOUNT}            \
+docker run                      \
+    --rm                        \
+    -i                          \
+    --tty                       \
+    --name "${PROJECT_NAME}"    \
+    --privileged                \
+    ${PROJECT_MOUNT}            \
+    ${PROJECT_PORTS}            \
+    ${SSH_MOUNT}                \
     ${SOURCE_IMAGE}
 

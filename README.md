@@ -26,9 +26,10 @@ The building blocks `dice` is assembled from include:
 - NeoVim
 - ALE LSP
 - language-specific LSP plugins, e.g. clangd
+- network troubleshooting tools, netcat, netstat
 
 ## How do I use it?
-Invoke the top-level Makefile target  to create your Docker base image.
+Invoke the top-level Makefile target to create your Docker base image.
 ```bash
 $> make build 
 ```
