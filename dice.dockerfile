@@ -14,6 +14,7 @@ ARG dev_git_mail=
 # Define our image's packages
 ENV packages="bash                \
               ca-certificates     \
+              cmake               \
               curl                \
               git                 \
               gnupg               \
