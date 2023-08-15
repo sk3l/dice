@@ -21,9 +21,11 @@ ENV packages="bash                \
               golang              \
               grep                \
               hadolint            \
+              jq                  \
               make                \
               nmap-ncat           \
               net-tools           \
+              openssl             \
               podman              \
               python3             \
               python3-pip         \
