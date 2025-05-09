@@ -1,7 +1,7 @@
 #!/bin/bash
 
 IMAGE=fedora
-TAG=38
+TAG=42
 CONTAINER=dice
 
 CODE_DIR=

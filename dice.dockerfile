@@ -1,4 +1,4 @@
-FROM fedora:38
+FROM fedora:42
 
 MAINTAINER Admin <admin@skelton.onl>
 
@@ -12,7 +12,8 @@ ARG dev_git_mail=
 
 ##
 # Define our image's packages
-ENV packages="bash                \
+ENV packages="awk                 \
+              bash                \
               ca-certificates     \
               cmake               \
               curl                \
@@ -43,20 +44,20 @@ ENV packages="bash                \
 # Update package manager and install packages
 RUN dnf -y update
 RUN dnf -y install $packages
-RUN dnf -y groupinstall "Development Tools" "Development Libraries"
+RUN dnf -y group install "development-tools"
 
 ##
 # Configure and install Neovim from nightly app image
 ENV   nvim_install_path=/opt/nvim
 ENV   nvim_exe_path=$nvim_install_path/squashfs-root/usr/bin/nvim
-ENV   nvim_source_url=https://github.com/neovim/neovim/releases/download/nightly/nvim.appimage
+ENV   nvim_source_url=https://github.com/neovim/neovim/releases/download/nightly/nvim-linux-x86_64.appimage
 
 RUN mkdir $nvim_install_path                        && \
     cd $nvim_install_path                           && \
     wget -O ./appImage $nvim_source_url             && \
     chmod +x $nvim_install_path/appImage            && \
     $nvim_install_path/appImage --appimage-extract  && \
-    ln -s $nvim_exe_path /usr/local/sbin/nvim
+    ln -s $nvim_exe_path /usr/local/bin/nvim
 
 ##
 # Install  English-language related development environment
@@ -87,7 +88,7 @@ ENV shell_rc_url=https://raw.githubusercontent.com/sk3l/sk3lshell/master/dot-fil
 RUN wget -O $HOME/.bashrc               $shell_rc_url/.bashrc
 RUN wget -O $HOME/.bashrc_local_fedora  $shell_rc_url/.bashrc_local_fedora
 
-RUN echo "export EDITOR=/usr/local/sbin/nvim" >> $HOME/.bashrc
+RUN echo "export EDITOR=/usr/local/bin/nvim" >> $HOME/.bashrc
 
 ##
 # Install developer's tmux config file
